@@ -292,19 +292,21 @@ static int const cursors[4] = /* must match dr and dc */
 
 typedef struct move {
     square square;
-    unsigned int colour: 1;
+    unsigned int colour;
 } move;
 enum {M_BLACK = 0, M_WHITE = 1};
 
-typedef move *(reasoning)(game_state *state,
+typedef move *(*reasoning)(game_state *state,
                           int nclues,
                           const square *clues,
                           move *buf);
 
-static reasoning solver_reasoning_not_too_big;
-static reasoning solver_reasoning_adjacency;
-static reasoning solver_reasoning_connectedness;
-static reasoning solver_reasoning_recursion;
+#define REASONING(name) \
+    static move *name(game_state *state, int nclues, const square *clues, move *buf)
+REASONING(solver_reasoning_not_too_big);
+REASONING(solver_reasoning_adjacency);
+REASONING(solver_reasoning_connectedness);
+REASONING(solver_reasoning_recursion);
 
 enum {
     DIFF_NOT_TOO_BIG,
@@ -359,7 +361,7 @@ static move *solve_internal(const game_state *state, move *base, int diff)
     return moves;
 }
 
-static reasoning *const reasonings[] = {
+static const reasoning reasonings[] = {
     solver_reasoning_not_too_big,
     solver_reasoning_adjacency,
     solver_reasoning_connectedness,
