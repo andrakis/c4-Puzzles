@@ -1,0 +1,44 @@
+# Simon Tatham's Puzzles (games/puzzles): one image a game, which has no
+# data, and `puzzles`, which lists them (c4/README.md)
+puzzles/:
+	puzzles.c4r: c4ix-puzzles.c4r
+	blackbox.c4r: c4ix-puz-blackbox.c4r
+	bridges.c4r: c4ix-puz-bridges.c4r
+	cube.c4r: c4ix-puz-cube.c4r
+	dominosa.c4r: c4ix-puz-dominosa.c4r
+	fifteen.c4r: c4ix-puz-fifteen.c4r
+	filling.c4r: c4ix-puz-filling.c4r
+	flip.c4r: c4ix-puz-flip.c4r
+	flood.c4r: c4ix-puz-flood.c4r
+	galaxies.c4r: c4ix-puz-galaxies.c4r
+	guess.c4r: c4ix-puz-guess.c4r
+	inertia.c4r: c4ix-puz-inertia.c4r
+	keen.c4r: c4ix-puz-keen.c4r
+	lightup.c4r: c4ix-puz-lightup.c4r
+	loopy.c4r: c4ix-puz-loopy.c4r
+	magnets.c4r: c4ix-puz-magnets.c4r
+	map.c4r: c4ix-puz-map.c4r
+	mines.c4r: c4ix-puz-mines.c4r
+	mosaic.c4r: c4ix-puz-mosaic.c4r
+	net.c4r: c4ix-puz-net.c4r
+	netslide.c4r: c4ix-puz-netslide.c4r
+	palisade.c4r: c4ix-puz-palisade.c4r
+	pattern.c4r: c4ix-puz-pattern.c4r
+	pearl.c4r: c4ix-puz-pearl.c4r
+	pegs.c4r: c4ix-puz-pegs.c4r
+	range.c4r: c4ix-puz-range.c4r
+	rect.c4r: c4ix-puz-rect.c4r
+	samegame.c4r: c4ix-puz-samegame.c4r
+	signpost.c4r: c4ix-puz-signpost.c4r
+	singles.c4r: c4ix-puz-singles.c4r
+	sixteen.c4r: c4ix-puz-sixteen.c4r
+	slant.c4r: c4ix-puz-slant.c4r
+	solo.c4r: c4ix-puz-solo.c4r
+	tents.c4r: c4ix-puz-tents.c4r
+	towers.c4r: c4ix-puz-towers.c4r
+	tracks.c4r: c4ix-puz-tracks.c4r
+	twiddle.c4r: c4ix-puz-twiddle.c4r
+	undead.c4r: c4ix-puz-undead.c4r
+	unequal.c4r: c4ix-puz-unequal.c4r
+	unruly.c4r: c4ix-puz-unruly.c4r
+	untangle.c4r: c4ix-puz-untangle.c4r
