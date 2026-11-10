@@ -1,5 +1,46 @@
 # Simon Tatham's Puzzles (games/puzzles): one image a game, which has no
-# data, and `puzzles`, which lists them (c4/README.md)
+# data, and `puzzles`, which lists them (c4/README.md). Each is in the
+# desktop's Go > Games > Puzzles, in a window of its own (games/README.md).
+#@app Games/Puzzles|Black Box|blackbox|window
+#@app Games/Puzzles|Bridges|bridges|window
+#@app Games/Puzzles|Cube|cube|window
+#@app Games/Puzzles|Dominosa|dominosa|window
+#@app Games/Puzzles|Fifteen|fifteen|window
+#@app Games/Puzzles|Filling|filling|window
+#@app Games/Puzzles|Flip|flip|window
+#@app Games/Puzzles|Flood|flood|window
+#@app Games/Puzzles|Galaxies|galaxies|window
+#@app Games/Puzzles|Guess|guess|window
+#@app Games/Puzzles|Inertia|inertia|window
+#@app Games/Puzzles|Keen|keen|window
+#@app Games/Puzzles|Light Up|lightup|window
+#@app Games/Puzzles|Loopy|loopy|window
+#@app Games/Puzzles|Magnets|magnets|window
+#@app Games/Puzzles|Map|map|window
+#@app Games/Puzzles|Mines|mines|window
+#@app Games/Puzzles|Mosaic|mosaic|window
+#@app Games/Puzzles|Net|net|window
+#@app Games/Puzzles|Netslide|netslide|window
+#@app Games/Puzzles|Palisade|palisade|window
+#@app Games/Puzzles|Pattern|pattern|window
+#@app Games/Puzzles|Pearl|pearl|window
+#@app Games/Puzzles|Pegs|pegs|window
+#@app Games/Puzzles|Range|range|window
+#@app Games/Puzzles|Rectangles|rect|window
+#@app Games/Puzzles|Same Game|samegame|window
+#@app Games/Puzzles|Signpost|signpost|window
+#@app Games/Puzzles|Singles|singles|window
+#@app Games/Puzzles|Sixteen|sixteen|window
+#@app Games/Puzzles|Slant|slant|window
+#@app Games/Puzzles|Solo|solo|window
+#@app Games/Puzzles|Tents|tents|window
+#@app Games/Puzzles|Towers|towers|window
+#@app Games/Puzzles|Train Tracks|tracks|window
+#@app Games/Puzzles|Twiddle|twiddle|window
+#@app Games/Puzzles|Undead|undead|window
+#@app Games/Puzzles|Unequal|unequal|window
+#@app Games/Puzzles|Unruly|unruly|window
+#@app Games/Puzzles|Untangle|untangle|window
 puzzles/:
 	puzzles.c4r: c4ix-puzzles.c4r
 	blackbox.c4r: c4ix-puz-blackbox.c4r

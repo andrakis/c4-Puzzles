@@ -12,8 +12,12 @@
 // A row of buttons above the puzzle and a status line below it; the mouse
 // and the keyboard go to the midend as they do in the other front ends.
 //
-//   NAME [--window] [ID]       play: ID is a game ID or a size, as
-//                              the other front ends take (`net 7x7`)
+//   NAME [--window|--fullscreen] [ID]
+//                              play: ID is a game ID or a size, as
+//                              the other front ends take (`net 7x7`);
+//                              in a window, or on the whole display
+//                              (C4IX: a window where it was started
+//                              in one, by default)
 //   NAME --test N [ID]         make the game, play N scripted steps, solve
 //                              it, printing a checksum of what was drawn
 //                              (make test-puzzles)
@@ -644,13 +648,14 @@ static void test_run(frontend *fe, int steps, const char *id)
 int main(int argc, char **argv)
 {
     frontend *fe = &fe0;
-    int steps = -1, window = 0, i;
+    int steps = -1, window = -1, i;
     const char *id = NULL;
     const char *err;
     for (i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--test") && i + 1 < argc) steps = atoi(argv[++i]);
         else if (!strcmp(argv[i], "--dump")) test_dump = 1;
         else if (!strcmp(argv[i], "--window")) window = 1;
+        else if (!strcmp(argv[i], "--fullscreen")) window = 0;
         else id = argv[i];
     }
     fe->held = -1;

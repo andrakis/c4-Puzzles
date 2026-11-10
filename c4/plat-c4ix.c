@@ -1,8 +1,9 @@
-// plat-c4ix.c -- the puzzles on C4IX. By default the whole display, which
-// the desktop gives up until the game ends (include/display.h); with
-// --window, or when something that does not give way has the display, the
-// Terminal window the game was started from (window.h), so a puzzle can sit
-// beside other windows. Two buffers in a window, as Tyrian keeps them: the
+// plat-c4ix.c -- the puzzles on C4IX. By default the window the game was
+// started in (window.h), a Terminal or one the desktop opened for it alone,
+// so a puzzle sits beside other windows; with --window, or when something
+// that does not give way has the display, that window too. On the console,
+// or with --fullscreen, the whole display, which the desktop gives up until
+// the game ends (include/display.h). Two buffers in a window, as Tyrian keeps them: the
 // desktop reads the one it was given when it next draws, and says so
 // (WIN_FRAME); until then a newer frame waits in the other.
 
@@ -26,6 +27,7 @@ static int sent, waiting, pending;
 int plat_open(const char *title, int window, int *w, int *h)
 {
     int i;
+    if (window < 0) window = win_here();
     if (!window && gui_present() && udisplay_take(0)) {
         fw = DW;
         fh = DH;

@@ -12,7 +12,9 @@ enum {
 };
 enum { FE_SHIFT = 1, FE_CTRL = 2, FE_ALT = 4 };
 
-// the display, and how big a framebuffer to draw it from; 0 when there is none
+// the display, and how big a framebuffer to draw it from; 0 when there is none.
+// window: 1 a window (--window), 0 the whole display (--fullscreen), -1 as
+// the platform chooses
 int  plat_open(const char *title, int window, int *w, int *h);
 // the frame, w x h bytes and 256 colours 0x00RRGGBB
 void plat_show(unsigned char *fb, int *pal);

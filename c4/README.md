@@ -8,7 +8,7 @@ upstream's (`git log upstream/main..c4` shows what changed). c4's
 |---|---|
 | `fe.c` | the front end: `drawing_api` on an 8-bit framebuffer, the buttons, the status line, the mouse and keys, and `--test` |
 | `font.h` | a stroke font, written for this port, so text is the same pixels in every build |
-| `plat-c4ix.c` | C4IX: the whole display (`udisplay_take`), or `--window`, the Terminal it was started from |
+| `plat-c4ix.c` | C4IX: the window it was started in (a Terminal, or the desktop's window for it alone), or on the console or with `--fullscreen` the whole display (`udisplay_take`) |
 | `plat-bare.c` | the bare machine and C4DOS, and grin's window under grin |
 | `plat-host.c` | gcc's build: no display, only `--test`, and C4IX libc's `qsort` |
 | `host-math.c` | gcc's build: C4IX libc's `math.c` in place of glibc's |
@@ -21,11 +21,16 @@ it and upstream's `CMakeLists.txt`: add a game to all three.
 
 ## Playing
 
+In C4IX's desktop a game plays in a window: Go > Games > Puzzles, and a
+double-click in Files, open one with nothing else in it, which closes when the
+game ends. Typed in a Terminal, a game turns that Terminal into its canvas until
+it ends. On the console, with no desktop, it takes the whole display.
+
 ```
 net                 a new game, the default size
 net 7x7             a size, as the other front ends take one
 net 5x5:85a78...    a game ID
-net --window        in the Terminal window it was started from
+net --fullscreen    on the whole display rather than in a window
 puzzles             what is here
 ```
 
