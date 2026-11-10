@@ -62,5 +62,8 @@ int plat_event(int *ev)
 }
 void plat_wait(int ms) { __c4_usleep(ms * 1000); }
 void plat_close(void) { if (!g) gui_detach(); }
+// no menu bar: grin's window and the display have none
+void plat_menu(int n, const char *title) { }
+void plat_item(int n, const char *label) { }
 int plat_ms(void) { return __time(); }
 int plat_ticks(void) { return g ? 0 : gui_ticks(); }

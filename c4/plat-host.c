@@ -6,6 +6,8 @@ void plat_show(unsigned char *fb, int *pal) { }
 int  plat_event(int *ev) { return 0; }
 void plat_wait(int ms) { }
 void plat_close(void) { }
+void plat_menu(int n, const char *title) { }
+void plat_item(int n, const char *label) { }
 int  plat_ms(void) { return 0; }
 int  plat_ticks(void) { return 0; }
 

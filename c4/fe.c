@@ -11,6 +11,9 @@
 //
 // A row of buttons above the puzzle and a status line below it; the mouse
 // and the keyboard go to the midend as they do in the other front ends.
+// Where the window has a menu bar to give (C4IX's desktop), Game, Type and
+// Help menus too: the buttons' actions, the game's presets, and a line
+// about it.
 //
 //   NAME [--window|--fullscreen] [ID]
 //                              play: ID is a game ID or a size, as
@@ -51,6 +54,8 @@ struct frontend {
     int quit;
     int seed_fixed;
     int npresets, preset;
+    int pids[MAX_PRESETS];      // each preset's id, as midend_which_preset gives it
+    int game_acts[12];          // the Game menu's items: a button each, or -1
     game_params *pparams[MAX_PRESETS];
     char *ptitles[MAX_PRESETS];
     char *status;               // the game's status line
@@ -348,6 +353,7 @@ static void add_presets(frontend *fe, struct preset_menu *m)
         else if (fe->npresets < MAX_PRESETS) {
             fe->pparams[fe->npresets] = m->entries[i].params;
             fe->ptitles[fe->npresets] = m->entries[i].title;
+            fe->pids[fe->npresets] = m->entries[i].id;
             fe->npresets++;
         }
     }
@@ -411,6 +417,7 @@ static void press(frontend *fe, int x, int y, int button)
     if (fe->message) set_message(fe, NULL);
     if (midend_process_key(fe->me, x, y, button) == PKR_QUIT) fe->quit = 1;
 }
+static void send_menus(frontend *fe);
 static void do_button(frontend *fe, int i)
 {
     const char *err;
@@ -429,9 +436,63 @@ static void do_button(frontend *fe, int i)
             midend_set_params(fe->me, fe->pparams[fe->preset]);
             new_game(fe);
             set_message(fe, fe->ptitles[fe->preset]);
+            send_menus(fe);
         }
         break;
       case 6: fe->quit = 1; break;
+    }
+}
+
+// ---- the menu bar ----
+
+static void game_item(frontend *fe, int *n, const char *label, int button)
+{
+    plat_item(0, label);
+    fe->game_acts[(*n)++] = button;
+}
+// Game: the buttons' actions, with the midend's keys for them; Type: the
+// presets, the one in play checked; Help: what this is. Sent again when the
+// preset changes.
+static void send_menus(frontend *fe)
+{
+    char item[64];
+    int i, n = 0, cur = midend_which_preset(fe->me);
+    plat_menu(0, "Game");
+    game_item(fe, &n, "New   N", 0);
+    game_item(fe, &n, "Restart", 1);
+    game_item(fe, &n, "-", -1);
+    game_item(fe, &n, "Undo   U", 2);
+    game_item(fe, &n, "Redo   R", 3);
+    if (thegame.can_solve) game_item(fe, &n, "Solve   Ctrl+S", 4);
+    game_item(fe, &n, "-", -1);
+    game_item(fe, &n, "Exit   Q", 6);
+    if (fe->npresets) {
+        plat_menu(1, "Type");
+        for (i = 0; i < fe->npresets; i++) {
+            if (fe->pids[i] == cur) fe->preset = i;
+            snprintf(item, sizeof(item), "%s%s", fe->pids[i] == cur ? "*" : "", fe->ptitles[i]);
+            plat_item(1, item);
+        }
+    }
+    plat_menu(fe->npresets ? 2 : 1, "Help");
+    plat_item(fe->npresets ? 2 : 1, "About");
+}
+static void menu_pick(frontend *fe, int menu, int item)
+{
+    static char about[96];
+    if (menu == 0) {
+        if (item >= 0 && item < 12 && fe->game_acts[item] >= 0) do_button(fe, fe->game_acts[item]);
+    } else if (menu == 1 && fe->npresets) {
+        if (item >= 0 && item < fe->npresets) {
+            fe->preset = item;
+            midend_set_params(fe->me, fe->pparams[item]);
+            new_game(fe);
+            set_message(fe, fe->ptitles[item]);
+            send_menus(fe);
+        }
+    } else {
+        snprintf(about, sizeof(about), "%s, from Simon Tatham's Portable Puzzle Collection", thegame.name);
+        set_message(fe, about);
     }
 }
 static void key(frontend *fe, int code, int ch, int mods)
@@ -480,6 +541,9 @@ static void event(frontend *fe, int *ev)
         break;
       case FE_EV_KEY:
         key(fe, ev[1], ev[2], ev[3]);
+        break;
+      case FE_EV_MENU:
+        menu_pick(fe, ev[1], ev[2]);
         break;
     }
 }
@@ -684,6 +748,7 @@ int main(int argc, char **argv)
         return 1;
     }
     new_game(fe);
+    send_menus(fe);
     play(fe);
     plat_close();
     return 0;

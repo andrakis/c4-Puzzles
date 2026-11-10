@@ -93,6 +93,11 @@ int plat_event(int *ev)
             continue;
         }
         if (k == WIN_SIZE) { cw = w[0]; ch = w[1]; continue; }
+        if (k == WIN_MENU) {
+            ev[0] = FE_EV_MENU;
+            ev[1] = w[0]; ev[2] = w[1]; ev[3] = 0;
+            return 1;
+        }
         if (k == WIN_KEY) {
             ev[0] = FE_EV_KEY;
             ev[1] = w[0]; ev[2] = w[1]; ev[3] = w[2];
@@ -112,6 +117,10 @@ void plat_wait(int ms)
     if (windowed) win_sleep(ms);
     else uevwait(ms, gui_events_ring(), 0);
 }
+// the menu bar of a window of the game's own (window.h); a Terminal and
+// the display have none
+void plat_menu(int n, const char *title) { if (windowed && !closed) win_menu(n, (char *) title); }
+void plat_item(int n, const char *label) { if (windowed && !closed) win_item(n, (char *) label); }
 void plat_close(void)
 {
     if (windowed) { if (!closed) win_close(); closed = 1; }
