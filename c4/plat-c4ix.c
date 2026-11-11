@@ -5,7 +5,10 @@
 // or with --fullscreen, the whole display, which the desktop gives up until
 // the game ends (include/display.h). Two buffers in a window, as Tyrian keeps them: the
 // desktop reads the one it was given when it next draws, and says so
-// (WIN_FRAME); until then a newer frame waits in the other.
+// (WIN_FRAME); until then a newer frame waits in the other. A new frame goes in
+// the one not shown, so the desktop never reads a buffer being changed or let
+// go. The window may be any size (win_resizable): each new one is FE_EV_SIZE,
+// and the frames are that size from then on.
 
 #include <stdlib.h>
 #include <string.h>
@@ -15,12 +18,14 @@
 #include "c4fe.h"
 #include "c4ix_user.h"
 
-enum { RING = 65536, DW = 640, DH = 480 };
+// the smallest frame: a smaller window shows it scaled down
+enum { RING = 65536, DW = 640, DH = 480, MIN_W = 240, MIN_H = 140 };
 
 static int windowed, fw, fh, closed;
 static int cw = WIN_W, ch = WIN_H;      // the canvas: the mouse is in its pixels
 static int *ring;
 static char *fbuf[2];
+static int fsize[2], fbw[2], fbh[2];    // each buffer: bytes it holds, the frame in it
 static int *fpal[2];
 static int sent, waiting, pending;
 
@@ -41,17 +46,19 @@ int plat_open(const char *title, int window, int *w, int *h)
             fbuf[i] = (char *) calloc(fw * fh, 1);
             fpal[i] = (int *) calloc(256, sizeof(int));
             if (!fbuf[i] || !fpal[i]) return 0;
+            fsize[i] = fw * fh;
         }
         if (!win_open((char *) title)) return 0;
+        win_resizable();
         windowed = 1;
     }
     *w = fw;
     *h = fh;
-    return 1;
+    return windowed ? 2 : 1;
 }
 static void send_frame(int b)
 {
-    win_fb(fbuf[b], fw, fh, fw, fpal[b]);
+    win_fb(fbuf[b], fbw[b], fbh[b], fbw[b], fpal[b]);
     win_present();
     sent = b;
     waiting = 1;
@@ -65,8 +72,16 @@ void plat_show(unsigned char *fb, int *pal)
         return;
     }
     if (closed) return;
-    b = waiting ? 1 - sent : sent;
+    b = 1 - sent;
+    if (fsize[b] < fw * fh) {
+        free(fbuf[b]);
+        fbuf[b] = (char *) malloc(fw * fh);
+        fsize[b] = fbuf[b] ? fw * fh : 0;
+        if (!fbuf[b]) { pending = 0; return; }
+    }
     memcpy(fbuf[b], fb, fw * fh);
+    fbw[b] = fw;
+    fbh[b] = fh;
     memcpy(fpal[b], pal, 256 * sizeof(int));
     if (waiting) pending = 1;
     else send_frame(b);
@@ -92,7 +107,19 @@ int plat_event(int *ev)
             if (pending) { pending = 0; send_frame(1 - sent); }
             continue;
         }
-        if (k == WIN_SIZE) { cw = w[0]; ch = w[1]; continue; }
+        if (k == WIN_SIZE) {
+            cw = w[0] > 0 ? w[0] : WIN_W;
+            ch = w[1] > 0 ? w[1] : WIN_H;
+            // the frames that size, or the smallest, scaled down to it
+            w[0] = cw < MIN_W ? MIN_W : cw;
+            w[1] = ch < MIN_H ? MIN_H : ch;
+            if (w[0] == fw && w[1] == fh) continue;
+            fw = w[0];
+            fh = w[1];
+            ev[0] = FE_EV_SIZE;
+            ev[1] = fw; ev[2] = fh; ev[3] = 0;
+            return 1;
+        }
         if (k == WIN_MENU) {
             ev[0] = FE_EV_MENU;
             ev[1] = w[0]; ev[2] = w[1]; ev[3] = 0;

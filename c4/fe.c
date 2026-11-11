@@ -53,6 +53,7 @@ struct frontend {
     int held;                   // the mouse button down in the puzzle, or -1
     int quit;
     int seed_fixed;
+    int fill;                   // in a window: the puzzle as big as it holds
     int npresets, preset;
     int pids[MAX_PRESETS];      // each preset's id, as midend_which_preset gives it
     int game_acts[12];          // the Game menu's items: a button each, or -1
@@ -370,11 +371,12 @@ static void layout(frontend *fe)
     int i, n, x = fe->w, y = fe->h - BAR_H - STAT_H;
     midend_size(fe->me, &x, &y, false, 1.0);
     // playing, up to twice the game's own size, as the display has room: a
-    // puzzle has no frame rate to keep. The test draws at its own size.
+    // puzzle has no frame rate to keep. In a window, which may be any size,
+    // as big as it holds. The test draws at its own size.
     if (!fe->seed_fixed) {
         int ax = fe->w, ay = fe->h - BAR_H - STAT_H;
-        x = 2 * x < ax ? 2 * x : ax;
-        y = 2 * y < ay ? 2 * y : ay;
+        x = fe->fill || 2 * x > ax ? ax : 2 * x;
+        y = fe->fill || 2 * y > ay ? ay : 2 * y;
         midend_size(fe->me, &x, &y, true, 1.0);
     }
     fe->bw = x;
@@ -398,6 +400,16 @@ static void layout(frontend *fe)
     draw_status(fe);
     midend_force_redraw(fe->me);
     fe->dirty = 1;
+}
+// the window's new size: a frame that size, and the puzzle laid out in it again
+static void resize(frontend *fe, int w, int h)
+{
+    if (w == fe->w && h == fe->h) return;
+    sfree(fe->fb);
+    fe->w = w;
+    fe->h = h;
+    fe->fb = snewn(w * h, unsigned char);
+    layout(fe);
 }
 static void set_message(frontend *fe, const char *m)
 {
@@ -544,6 +556,9 @@ static void event(frontend *fe, int *ev)
         break;
       case FE_EV_MENU:
         menu_pick(fe, ev[1], ev[2]);
+        break;
+      case FE_EV_SIZE:
+        resize(fe, ev[1], ev[2]);
         break;
     }
 }
@@ -712,7 +727,7 @@ static void test_run(frontend *fe, int steps, const char *id)
 int main(int argc, char **argv)
 {
     frontend *fe = &fe0;
-    int steps = -1, window = -1, i;
+    int steps = -1, window = -1, i, got = 0;
     const char *id = NULL;
     const char *err;
     for (i = 1; i < argc; i++) {
@@ -727,10 +742,11 @@ int main(int argc, char **argv)
         fe->seed_fixed = 1;
         fe->w = 640;
         fe->h = 480;
-    } else if (!plat_open(thegame.name, window, &fe->w, &fe->h)) {
+    } else if (!(got = plat_open(thegame.name, window, &fe->w, &fe->h))) {
         printf("%s: no display\n", thegame.name);
         return 1;
     }
+    fe->fill = got == 2;
     fe->fb = snewn(fe->w * fe->h, unsigned char);
     clip_all(fe);
     fe->me = midend_new(fe, &thegame, &c4_drawing, fe);

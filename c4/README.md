@@ -37,7 +37,8 @@ puzzles             what is here
 The buttons along the top are New, Restart, Undo, Redo, Solve, Type (the next
 of the game's preset sizes) and Quit. In a window of its own the game has a
 menu bar too: Game, with the buttons' actions; Type, every preset, the one in
-play checked; and Help. The mouse and keys go to the game as in
+play checked; and Help. The window may be dragged to any size, or maximised:
+the puzzle is laid out again for it, as big as it fits. The mouse and keys go to the game as in
 upstream's other front ends: `n`, `u`, `r` and `q` work in most games, Ctrl-Z and
 Ctrl-Y too, and the arrow keys, Enter and Space are its cursor keys where it has
 them. Esc quits.

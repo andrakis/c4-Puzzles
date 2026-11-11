@@ -9,13 +9,14 @@ enum {
     FE_EV_DOWN = 2,     // x, y, button (0 left, 1 middle, 2 right)
     FE_EV_UP = 3,       // x, y, button
     FE_EV_KEY = 4,      // keycode, character (0 if none), modifiers
-    FE_EV_MENU = 5      // menu, item (rules counted): the window's menu bar
+    FE_EV_MENU = 5,     // menu, item (rules counted): the window's menu bar
+    FE_EV_SIZE = 6      // w, h: the window's new size, which frames are from now on
 };
 enum { FE_SHIFT = 1, FE_CTRL = 2, FE_ALT = 4 };
 
-// the display, and how big a framebuffer to draw it from; 0 when there is none.
-// window: 1 a window (--window), 0 the whole display (--fullscreen), -1 as
-// the platform chooses
+// the display, and how big a framebuffer to draw it from; 0 when there is none,
+// 2 for a window, which may change size (FE_EV_SIZE). window: 1 a window
+// (--window), 0 the whole display (--fullscreen), -1 as the platform chooses
 int  plat_open(const char *title, int window, int *w, int *h);
 // the frame, w x h bytes and 256 colours 0x00RRGGBB
 void plat_show(unsigned char *fb, int *pal);
