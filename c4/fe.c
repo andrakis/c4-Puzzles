@@ -419,8 +419,10 @@ static void set_message(frontend *fe, const char *m)
 static void new_game(frontend *fe)
 {
     midend_new_game(fe->me);
-    sfree(fe->status);
-    fe->status = NULL;
+    // the game's status line stays as it is: drawing.c passes the game's
+    // text on only when it changes, so one let go of here would stay blank
+    // whenever the new game's first is the old game's last (Net's "Active:
+    // 1/25" twice running)
     set_message(fe, NULL);
     layout(fe);
 }
