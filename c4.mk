@@ -15,17 +15,17 @@ PUZ_HDRS   := $(wildcard $(PUZ)/*.h $(PUZ)/c4/*.h) \
               $(wildcard src/c4ix/libc/include/*.h src/c4ix/libc/include/sys/*.h) \
               src/c4ix/include/display.h src/c4ix/include/window.h src/c4ix/include/window.c \
               libjs/guest/gui.h libjs/guest/gui.c
-PUZ_CC     := ./c4sp32 -c 400000 src/c4sp/lisp/c4lc.lisp -O $(IMG_G) -mfuse -fno-builtin -c -conforming \
+PUZ_CC     := $(call lc32,-c 400000) -O $(IMG_G) -mfuse -fno-builtin -c -conforming \
               -I $(PUZ)/c4 -I src/c4ix/libc/include -I src/c4ix/include -I libjs/guest -I $(PUZ)
 puzzles-objs: $(PUZ_CORE:%=.puzzles/%.c4o) $(PUZ_GAMES:%=.puzzles/%.c4o) .puzzles/fe.c4o \
               .puzzles/plat/plat-c4ix.c4o .puzzles/plat/plat-bare.c4o .puzzles/plat/puzzles-list.c4o
-.puzzles/%.c4o: $(PUZ)/%.c $(PUZ_HDRS) $(C4LC_LISP) .img_g | c4sp32
+.puzzles/%.c4o: $(PUZ)/%.c $(PUZ_HDRS) $(C4LC_LISP) .img_g | $(LC32_BIN)
 	@mkdir -p .puzzles/plat
 	$(PUZ_CC) $< $@ > /dev/null
-.puzzles/fe.c4o: $(PUZ)/c4/fe.c $(PUZ_HDRS) $(C4LC_LISP) .img_g | c4sp32
+.puzzles/fe.c4o: $(PUZ)/c4/fe.c $(PUZ_HDRS) $(C4LC_LISP) .img_g | $(LC32_BIN)
 	@mkdir -p .puzzles/plat
 	$(PUZ_CC) $< $@ > /dev/null
-.puzzles/plat/%.c4o: $(PUZ)/c4/%.c $(PUZ_HDRS) $(C4LC_LISP) .img_g | c4sp32
+.puzzles/plat/%.c4o: $(PUZ)/c4/%.c $(PUZ_HDRS) $(C4LC_LISP) .img_g | $(LC32_BIN)
 	@mkdir -p .puzzles/plat
 	$(PUZ_CC) $< $@ > /dev/null
 PHONY += puzzles-objs
