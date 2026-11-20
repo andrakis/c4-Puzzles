@@ -9,7 +9,7 @@ upstream's (`git log upstream/main..c4` shows what changed). c4's
 | `fe.c` | the front end: `drawing_api` on an 8-bit framebuffer, the buttons, the status line, the mouse and keys, and `--test` |
 | `font.h` | a stroke font, written for this port, so text is the same pixels in every build |
 | `plat-c4ix.c` | C4IX: the window it was started in (a Terminal, or the desktop's window for it alone), or on the console or with `--fullscreen` the whole display (`udisplay_take`) |
-| `plat-bare.c` | the bare machine and C4DOS, and grin's window under grin |
+| `plat-bare.c` | the bare machine and C4DOS, and grin's window under grin: with a grin whose table is version 6, a window of any size that the game fills, and the menu bar, as on C4IX |
 | `plat-host.c` | gcc's build: no display, only `--test`, and C4IX libc's `qsort` |
 | `host-math.c` | gcc's build: C4IX libc's `math.c` in place of glibc's |
 | `puzzles-list.c` | `puzzles`, which lists the games |
