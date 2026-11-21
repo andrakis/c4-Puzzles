@@ -67,8 +67,9 @@ compiler differs. Both are needed. Undead's generator makes its monsters from th
 order of items a sort finds equal. Untangle places a point on exactly a whole
 number by way of `cos`, where the two libraries differ in the last bit.
 
-The test draws at the game's own size, and play goes up to twice that, so
-the larger sizes of the same drawing code are not in its sums.
+The test draws at the game's own size. Play goes up to twice that on the whole
+display, and to the window's size in a window, so the larger sizes of the same
+drawing code are not in its sums.
 `libjs/tests/web-puzzles.mjs` plays Net in a browser, on the display and in a
 window.
 
